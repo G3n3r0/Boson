@@ -1,4 +1,5 @@
 window.onload = function() {
+    var mapIndex = 0;
     var cd = {
         rects: function(a, b) {
             return !(
@@ -20,20 +21,39 @@ window.onload = function() {
     var canvas = document.getElementById("c");
     //var size = 96;
     var size = canvas.width/map[0][0].length;
+    //var size = canvas.width/map[0]["map"][0].length;
     var houses = [];
     //console.log(size);
     function loadMap(map) {
-        for(var i=0;i<map.length;i++) {
+        console.log(map);
+        var hInd = 0;
+        //var map1 = map[0]["map"];
+        //console.log(map1);
+        //for(var i=0;i<map.length;i++) {
+        var i = mapIndex;
+        console.log(hMap[i]);
             for(var j=0;j<map[i].length;j++) {
                 //console.log(map[i][j]);
                 //console.log(map[i][j].split(""));
                 var split = map[i][j].split("");
+                console.log(split);
                 for(var k=0;k<split.length;k++) {
                     //console.log(k);
                     if(split[k]=="-") {
                         var g = new Graphics();
                         g.beginStroke("#000");
                         g.beginFill("rgba(255,255,255,1)");
+                        g.drawRect(0,0,size,size);
+                        var s = new Shape(g);
+                        s.x = k*size;
+                        s.y = j*size;
+                        s.alpha = 0.1;
+                        //console.log(s.x,s.y);
+                        stage.addChild(s);
+                    } else if(split[k]=="+") {
+                        var g = new Graphics();
+                        g.beginStroke("#000");
+                        g.beginFill("rgba(0,0,255,1)");
                         g.drawRect(0,0,size,size);
                         var s = new Shape(g);
                         s.x = k*size;
@@ -51,13 +71,15 @@ window.onload = function() {
                         s.y = j*size;
                         s.width = size;
                         s.height = size;
+                        s.mapInd = i;
+                        s.hInd = hInd;
                         houses.push(s);
                         //console.log(s.x,s.y);
                         stage.addChild(s);
                     }
                 }
             }
-        }
+        //}
         stage.update();
     }
     var u,d,l,r = false;
@@ -102,6 +124,11 @@ window.onload = function() {
         for(var i=0;i<houses.length;i++) {
             if(cd.rects(playerBit, houses[i])) {
                 //console.log("Captain, the Shi'ar have collided into both the Enterprise and the Tardis!");
+                house = houses[i];
+                houses = [];
+                stage.removeAllChildren();
+                loadMap(hMap[house.mapInd]);
+                stage.addChild(playerBit);
             }
         }
         stage.update();
