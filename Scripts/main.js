@@ -1,5 +1,5 @@
 window.onload = function() {
-    var mapIndex = 0;
+    var mapIndex = 1;
     var cd = {
         rects: function(a, b) {
             return !(
@@ -24,7 +24,7 @@ window.onload = function() {
     //var size = canvas.width/map[0]["map"][0].length;
     var houses = [];
     //console.log(size);
-    function loadMap(map) {
+    function loadMap(map,mapIndex) {
         console.log(map);
         var hInd = 0;
         //var map1 = map[0]["map"];
@@ -50,7 +50,7 @@ window.onload = function() {
                         s.alpha = 0.1;
                         //console.log(s.x,s.y);
                         stage.addChild(s);
-                    } else if(split[k]=="+") {
+                    } else if(split[k]=="b") {
                         var g = new Graphics();
                         g.beginStroke("#000");
                         g.beginFill("rgba(0,0,255,1)");
@@ -74,6 +74,7 @@ window.onload = function() {
                         s.mapInd = i;
                         s.hInd = hInd;
                         houses.push(s);
+                        hInd += 1;
                         //console.log(s.x,s.y);
                         stage.addChild(s);
                     }
@@ -94,9 +95,12 @@ window.onload = function() {
             r = true;
         } else if(e.which===37) {
             l = true;
+        } else if(e.which===16) {
+            spd = 9;
         }
     };
     document.onkeyup = function(e) {
+        //console.log(e.which)
         if(e.which===38) {
             //playerBit.y -= 2;
             u = false;
@@ -107,18 +111,23 @@ window.onload = function() {
             r = false;
         } else if(e.which===37) {
             l = false;
+        } else if(e.which===16) {
+            spd = 3;
         }
     };
-    var spd = 2;
+    var spd = 3;
+    window.inHouse = false;
     window.tick = function() {
-        if(u) {
+        //console.log(playerBit.y+playerBit.height, canvas.height,mapIndex,map.length);
+        //console.log(canvas.height-spd);
+        if(u && !(mapIndex===0 && playerBit.y<spd)) {
             playerBit.y -= spd;
-        } else if(d) {
+        } else if(d && !(mapIndex===map.length-1 && playerBit.y+playerBit.height>canvas.height-spd)) {
             playerBit.y += spd;
         }
-        if(l) {
+        if(l && playerBit.x>0) {
             playerBit.x -= spd;
-        } else if(r) {
+        } else if(r && playerBit.x+playerBit.width<=canvas.width) {
             playerBit.x += spd;
         }
         for(var i=0;i<houses.length;i++) {
@@ -127,7 +136,37 @@ window.onload = function() {
                 house = houses[i];
                 houses = [];
                 stage.removeAllChildren();
-                loadMap(hMap[house.mapInd]);
+                console.log("derp", house.hInd, hMap[house.mapInd][house.hInd])
+                loadMap(hMap[house.mapInd], house.hInd);
+                playerBit.x = canvas.width/2-playerBit.width/2;
+                playerBit.y = canvas.height/2-playerBit.height/2;
+                stage.addChild(playerBit);
+                window.inHouse = true;
+            }
+        }
+        if(inHouse) {
+            if(playerBit.x<0 || playerBit.y<0 || (playerBit.x+playerBit.width)>canvas.width || (playerBit.y+playerBit.height)>canvas.height) {
+                stage.removeAllChildren();
+                playerBit.x = canvas.width/2-playerBit.width/2;
+                playerBit.y = canvas.height/2-playerBit.height/2;
+                loadMap(map,mapIndex);
+                stage.addChild(playerBit);
+                window.inHouse = false;
+            }
+        } else {
+            if(playerBit.y<0) {
+                mapIndex -= 1;
+                stage.removeAllChildren();
+                playerBit.x = canvas.width/2-playerBit.width/2;
+                playerBit.y = canvas.height/2-playerBit.height/2;
+                loadMap(map,mapIndex);
+                stage.addChild(playerBit);
+            } else if(playerBit.y+playerBit.height>canvas.height) {
+                mapIndex += 1;
+                stage.removeAllChildren();
+                playerBit.x = canvas.width/2-playerBit.width/2;
+                playerBit.y = canvas.height/2-playerBit.height/2;
+                loadMap(map,mapIndex);
                 stage.addChild(playerBit);
             }
         }
@@ -137,7 +176,7 @@ window.onload = function() {
         window.stage = new Stage(canvas);
         console.log(stage);
         
-        loadMap(map);
+        loadMap(map,mapIndex);
         
         //stage.update();
         Ticker.setFPS(16);
