@@ -19,6 +19,22 @@ window.onload = function() {
         }
     };
     var canvas = document.getElementById("c");
+    var canvas2 = document.getElementById("d");
+    canvas2.patternizer({
+        stripes : [ 
+            {
+                color: '#eeeeee',
+                rotation: 45,
+                opacity: 30,
+                mode: 'normal',
+                width: 45,
+                gap: 16,
+                offset: 0
+            }
+        ],
+        //bg : '#323232'
+        bg: "rgba(0,0,0,0)"
+    });
     //var size = 96;
     var size = canvas.width/map[0][0].length;
     //var size = canvas.width/map[0]["map"][0].length;

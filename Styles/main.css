@@ -23,7 +23,7 @@ body {
     background: linear-gradient(top, #45484d 0%,#000000 100%); /* W3C */
     filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#45484d', endColorstr='#000000',GradientType=0 ); /* IE6-9 */
 }
-canvas {
+#c {
     background-image: url("../Graphics/bg_1_1.png");
     background-size: 100% 100%;
 }
