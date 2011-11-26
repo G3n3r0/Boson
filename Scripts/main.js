@@ -19,7 +19,7 @@ window.onload = function() {
         }
     };
     var canvas = document.getElementById("c");
-    var canvas2 = document.getElementById("d");
+    /*var canvas2 = document.getElementById("d");
     canvas2.patternizer({
         stripes : [ 
             {
@@ -34,7 +34,7 @@ window.onload = function() {
         ],
         //bg : '#323232'
         bg: "rgba(0,0,0,0)"
-    });
+    });*/
     //var size = 96;
     var size = canvas.width/map[0][0].length;
     //var size = canvas.width/map[0]["map"][0].length;
